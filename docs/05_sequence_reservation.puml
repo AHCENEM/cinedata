@@ -1,0 +1,67 @@
+@startuml
+title CinéData - Réservation de places en ligne
+
+actor Client
+participant "Interface web" as IU
+participant "ContrôleurRéservation" as CR
+participant "ServiceCatalogue" as SC
+participant "ServiceBilletterie" as SB
+participant "Système de paiement" as SP
+database "Base CinéData" as BDD
+
+== Consultation du plan de salle ==
+Client -> IU : choisirSéance(idSéance)
+activate IU
+IU -> CR : afficherPlan(idSéance)
+activate CR
+CR -> SC : siègesDeLaSéance(idSéance)
+activate SC
+SC -> BDD : lire les sièges libres
+activate BDD
+BDD --> SC : liste des sièges
+deactivate BDD
+SC --> CR : plan de salle
+deactivate SC
+CR --> IU : plan de salle
+deactivate CR
+IU --> Client : afficher le plan
+
+== Réservation ==
+Client -> IU : réserver(sièges)
+IU -> CR : réserver(idSéance, sièges, idClient)
+activate CR
+CR -> SB : créerRéservation(idSéance, sièges, idClient)
+activate SB
+
+loop pour chaque siège choisi
+  SB -> BDD : vérifier la disponibilité
+  BDD --> SB : libre / déjà pris
+end
+
+alt un siège est déjà pris
+  SB --> CR : erreur « siège indisponible »
+  CR --> IU : erreur
+  IU --> Client : choisir d'autres places
+else tous les sièges sont libres
+  SB -> BDD : enregistrer la réservation (en attente)
+  opt le client a une carte fidélité
+    SB -> SB : appliquerRéduction(20 %)
+  end
+  SB -> SP : demanderPaiement(montant)
+  activate SP
+  SP --> SB : paiement accepté
+  deactivate SP
+  par
+    SB -> BDD : confirmer la réservation
+  else
+    SB ->> Client : e-mail de confirmation
+  end
+  SB --> CR : réservation confirmée
+  CR --> IU : ticket
+  IU --> Client : afficher le ticket
+end
+
+deactivate SB
+deactivate CR
+deactivate IU
+@enduml
