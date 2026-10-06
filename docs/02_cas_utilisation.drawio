@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Page-1" id="Hln0qyXIx_SQvj75x4NO">
-    <mxGraphModel dx="2544" dy="878" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2039" dy="620" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -84,11 +84,13 @@
         <mxCell id="TtuOzzxI85JtFuqaWRXQ-17" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;" value="Consulter le programme" vertex="1">
           <mxGeometry height="80" width="120" x="359" y="190" as="geometry" />
         </mxCell>
-        <mxCell id="TtuOzzxI85JtFuqaWRXQ-51" edge="1" parent="1" source="TtuOzzxI85JtFuqaWRXQ-21" style="dashed=1;endArrow=open;html=1;" target="TtuOzzxI85JtFuqaWRXQ-49">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
         <mxCell id="TtuOzzxI85JtFuqaWRXQ-52" edge="1" parent="1" source="TtuOzzxI85JtFuqaWRXQ-21" style="dashed=1;endArrow=open;html=1;" target="TtuOzzxI85JtFuqaWRXQ-22">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TtuOzzxI85JtFuqaWRXQ-57" connectable="0" parent="TtuOzzxI85JtFuqaWRXQ-52" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.2235" as="geometry">
+            <mxPoint y="-1" as="offset" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="TtuOzzxI85JtFuqaWRXQ-21" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;" value="Réserver des places" vertex="1">
           <mxGeometry height="80" width="120" x="359" y="290" as="geometry" />
@@ -138,11 +140,19 @@
         <mxCell id="TtuOzzxI85JtFuqaWRXQ-49" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;" value="Vérifier la disponibilité des places" vertex="1">
           <mxGeometry height="80" width="120" x="570" y="360" as="geometry" />
         </mxCell>
-        <mxCell id="TtuOzzxI85JtFuqaWRXQ-53" edge="1" parent="1" source="TtuOzzxI85JtFuqaWRXQ-50" style="dashed=1;endArrow=open;html=1;" target="TtuOzzxI85JtFuqaWRXQ-22">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
         <mxCell id="TtuOzzxI85JtFuqaWRXQ-50" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;" value="Appliquer la réduction fidélité" vertex="1">
           <mxGeometry height="80" width="120" x="570" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="TtuOzzxI85JtFuqaWRXQ-55" edge="1" parent="1" source="TtuOzzxI85JtFuqaWRXQ-21" style="dashed=1;endArrow=open;html=1;" target="TtuOzzxI85JtFuqaWRXQ-49" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TtuOzzxI85JtFuqaWRXQ-60" edge="1" parent="1" source="TtuOzzxI85JtFuqaWRXQ-50" style="dashed=1;endArrow=open;html=1;" target="TtuOzzxI85JtFuqaWRXQ-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TtuOzzxI85JtFuqaWRXQ-61" connectable="0" parent="TtuOzzxI85JtFuqaWRXQ-60" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" vertex="1">
+          <mxGeometry relative="1" x="0.0821" y="2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
