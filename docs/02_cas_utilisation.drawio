@@ -5,7 +5,7 @@
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="TtuOzzxI85JtFuqaWRXQ-2" parent="1" style="endArrow=none;html=1;" value="CinéData" vertex="1">
-          <mxGeometry height="1790" width="500" x="169" y="150" as="geometry" />
+          <mxGeometry height="1790" width="500" x="210" y="155" as="geometry" />
         </mxCell>
         <mxCell id="TtuOzzxI85JtFuqaWRXQ-20" edge="1" parent="1" source="TtuOzzxI85JtFuqaWRXQ-3" style="endArrow=none;html=1;" target="TtuOzzxI85JtFuqaWRXQ-17">
           <mxGeometry relative="1" as="geometry" />
@@ -84,6 +84,12 @@
         <mxCell id="TtuOzzxI85JtFuqaWRXQ-17" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;" value="Consulter le programme" vertex="1">
           <mxGeometry height="80" width="120" x="359" y="190" as="geometry" />
         </mxCell>
+        <mxCell id="TtuOzzxI85JtFuqaWRXQ-51" edge="1" parent="1" source="TtuOzzxI85JtFuqaWRXQ-21" style="dashed=1;endArrow=open;html=1;" target="TtuOzzxI85JtFuqaWRXQ-49">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TtuOzzxI85JtFuqaWRXQ-52" edge="1" parent="1" source="TtuOzzxI85JtFuqaWRXQ-21" style="dashed=1;endArrow=open;html=1;" target="TtuOzzxI85JtFuqaWRXQ-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="TtuOzzxI85JtFuqaWRXQ-21" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;" value="Réserver des places" vertex="1">
           <mxGeometry height="80" width="120" x="359" y="290" as="geometry" />
         </mxCell>
@@ -128,6 +134,15 @@
         </mxCell>
         <mxCell id="TtuOzzxI85JtFuqaWRXQ-46" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;" value="Programmer une séance" vertex="1">
           <mxGeometry height="110" width="160" x="341.5" y="1513" as="geometry" />
+        </mxCell>
+        <mxCell id="TtuOzzxI85JtFuqaWRXQ-49" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;" value="Vérifier la disponibilité des places" vertex="1">
+          <mxGeometry height="80" width="120" x="570" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="TtuOzzxI85JtFuqaWRXQ-53" edge="1" parent="1" source="TtuOzzxI85JtFuqaWRXQ-50" style="dashed=1;endArrow=open;html=1;" target="TtuOzzxI85JtFuqaWRXQ-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TtuOzzxI85JtFuqaWRXQ-50" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;" value="Appliquer la réduction fidélité" vertex="1">
+          <mxGeometry height="80" width="120" x="570" y="470" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
