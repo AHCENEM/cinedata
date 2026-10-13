@@ -1,0 +1,164 @@
+// CinéData - schéma relationnel (19 tables)
+
+// ===== Personnes =====
+Table personne {
+  id int [pk, increment]
+  nom varchar(50) [not null]
+  prenom varchar(50) [not null]
+  date_naissance date
+  email varchar(100) [not null, unique]
+  telephone varchar(20)
+}
+
+Table client {
+  id int [pk, ref: - personne.id]
+  adresse varchar(255)
+  date_inscription date [not null, default: `CURRENT_DATE`]
+}
+
+Table equipe {
+  id int [pk, increment]
+  nom varchar(50) [not null]
+}
+
+Table employe {
+  id int [pk, ref: - personne.id]
+  date_embauche date [not null]
+  poste varchar(50) [not null]
+  salaire decimal(8,2)
+  id_responsable int [ref: > employe.id, note: 'NULL si aucun responsable (réflexive)']
+  id_equipe int [ref: > equipe.id, note: 'NULL possible (agrégation)']
+}
+
+Table carte_fidelite {
+  id int [pk, increment]
+  numero varchar(20) [not null, unique]
+  points int [not null, default: 0]
+  date_creation date [not null]
+  id_client int [not null, unique, ref: - client.id]
+}
+
+// ===== Catalogue =====
+Table realisateur {
+  id int [pk, increment]
+  nom varchar(50) [not null]
+  prenom varchar(50)
+}
+
+Table acteur {
+  id int [pk, increment]
+  nom varchar(50) [not null]
+  prenom varchar(50)
+}
+
+Table genre {
+  id int [pk, increment]
+  libelle varchar(50) [not null, unique]
+}
+
+Table film {
+  id int [pk, increment]
+  titre varchar(150) [not null]
+  duree int [not null, note: 'en minutes']
+  date_sortie date
+  classification varchar(15) [not null, note: 'Tous publics, -12, -16, -18']
+  synopsis text
+  id_realisateur int [not null, ref: > realisateur.id]
+}
+
+Table film_genre {
+  id_film int [ref: > film.id]
+  id_genre int [ref: > genre.id]
+  indexes {
+    (id_film, id_genre) [pk]
+  }
+}
+
+Table casting {
+  id_film int [ref: > film.id]
+  id_acteur int [ref: > acteur.id]
+  role varchar(100)
+  indexes {
+    (id_film, id_acteur) [pk]
+  }
+}
+
+Table avis {
+  id int [pk, increment]
+  note int [not null, note: 'CHECK entre 1 et 5']
+  commentaire text
+  date_avis date [not null]
+  id_client int [not null, ref: > client.id]
+  id_film int [not null, ref: > film.id]
+  indexes {
+    (id_client, id_film) [unique]
+  }
+}
+
+// ===== Programmation =====
+Table salle {
+  id int [pk, increment]
+  numero int [not null, unique]
+  nom varchar(50) [not null]
+  capacite int [not null, note: 'CHECK entre 20 et 400 (R4)']
+  type varchar(10) [not null, default: 'standard']
+}
+
+Table siege {
+  id int [pk, increment]
+  id_salle int [not null, ref: > salle.id, note: 'ON DELETE CASCADE (composition, R9)']
+  rangee char(2) [not null]
+  numero int [not null]
+  est_pmr boolean [not null, default: false]
+  indexes {
+    (id_salle, rangee, numero) [unique]
+  }
+}
+
+Table seance {
+  id int [pk, increment]
+  date_heure_debut datetime [not null]
+  version varchar(10) [not null, note: 'VF ou VOSTFR']
+  prix_base decimal(6,2) [not null, note: 'CHECK >= 0 (R5)']
+  id_film int [not null, ref: > film.id, note: 'ON DELETE RESTRICT (R8)']
+  id_salle int [not null, ref: > salle.id]
+}
+
+// ===== Billetterie =====
+Table reservation {
+  id int [pk, increment]
+  date_reservation datetime [not null, default: `now()`]
+  statut varchar(15) [not null, default: 'en attente']
+  id_client int [not null, ref: > client.id]
+  id_seance int [not null, ref: > seance.id]
+}
+
+Table place_reservee {
+  id_reservation int [ref: > reservation.id]
+  id_siege int [ref: > siege.id]
+  id_seance int [not null, ref: > seance.id, note: 'dénormalisation volontaire pour R1']
+  tarif varchar(10) [not null, note: 'plein, reduit, enfant']
+  prix decimal(6,2) [not null]
+  indexes {
+    (id_reservation, id_siege) [pk]
+    (id_seance, id_siege) [unique, note: 'R1 : un siège une seule fois par séance']
+  }
+}
+
+Table paiement {
+  id int [pk, increment]
+  montant decimal(6,2) [not null]
+  date_paiement datetime [not null]
+  statut varchar(15) [not null]
+  moyen varchar(10) [not null, note: 'discriminateur : CB ou ESPECES']
+  numero_transaction varchar(50) [note: 'NULL si espèces']
+  montant_recu decimal(6,2) [note: 'NULL si CB']
+  id_reservation int [not null, unique, ref: - reservation.id]
+}
+
+Table ticket {
+  id int [pk, increment]
+  code varchar(20) [not null, unique]
+  date_emission datetime [not null]
+  id_reservation int [not null, unique, ref: - reservation.id, note: 'ON DELETE CASCADE (composition)']
+}
