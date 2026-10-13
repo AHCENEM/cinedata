@@ -1,0 +1,220 @@
+MariaDB [cinedata]> SOURCE D:/mon-projet/cinedata/sql/09_optimisation.sql;
+Query OK, 0 rows affected (0.000 sec)
+
+Database changed
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+Records: 0  Duplicates: 0  Warnings: 1
+
++----------------+---------+----------+----------+
+| Table          | Op      | Msg_type | Msg_text |
++----------------+---------+----------+----------+
+| cinedata.siege | analyze | status   | OK       |
++----------------+---------+----------+----------+
+1 row in set (0.018 sec)
+
++-----------------+
+| etape           |
++-----------------+
+| A1 - sans index |
++-----------------+
+1 row in set (0.000 sec)
+
++------+-------------+-------+-------+---------------+-------------------+---------+------+------+--------------------------+
+| id   | select_type | table | type  | possible_keys | key               | key_len | ref  | rows | Extra                    |
++------+-------------+-------+-------+---------------+-------------------+---------+------+------+--------------------------+
+|    1 | SIMPLE      | siege | index | NULL          | uq_siege_position | 16      | NULL | 600  | Using where; Using index |
++------+-------------+-------+-------+---------------+-------------------+---------+------+------+--------------------------+
+1 row in set (0.002 sec)
+
+Query OK, 0 rows affected (0.023 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
++----------------+---------+----------+----------+
+| Table          | Op      | Msg_type | Msg_text |
++----------------+---------+----------+----------+
+| cinedata.siege | analyze | status   | OK       |
++----------------+---------+----------+----------+
+1 row in set (0.007 sec)
+
++-----------------+
+| etape           |
++-----------------+
+| A3 - avec index |
++-----------------+
+1 row in set (0.000 sec)
+
++------+-------------+-------+------+-------------------------+-------------------------+---------+-------------+------+-----------------------+
+| id   | select_type | table | type | possible_keys           | key                     | key_len | ref         | rows | Extra                 |
++------+-------------+-------+------+-------------------------+-------------------------+---------+-------------+------+-----------------------+
+|    1 | SIMPLE      | siege | ref  | idx_siege_rangee_numero | idx_siege_rangee_numero | 12      | const,const | 3    | Using index condition |
++------+-------------+-------+------+-------------------------+-------------------------+---------+-------------+------+-----------------------+
+1 row in set (0.001 sec)
+
++---------------------------------------+
+| etape                                 |
++---------------------------------------+
+| A4 - numero seul : index inutilisable |
++---------------------------------------+
+1 row in set (0.000 sec)
+
++------+-------------+-------+-------+---------------+-------------------+---------+------+------+--------------------------+
+| id   | select_type | table | type  | possible_keys | key               | key_len | ref  | rows | Extra                    |
++------+-------------+-------+-------+---------------+-------------------+---------+------+------+--------------------------+
+|    1 | SIMPLE      | siege | index | NULL          | uq_siege_position | 16      | NULL | 600  | Using where; Using index |
++------+-------------+-------+-------+---------------+-------------------+---------+------+------+--------------------------+
+1 row in set (0.000 sec)
+
++-----------------------------+
+| etape                       |
++-----------------------------+
+| A5 - index unique sur email |
++-----------------------------+
+1 row in set (0.000 sec)
+
++------+-------------+----------+-------+-------------------+-------------------+---------+-------+------+-------+
+| id   | select_type | table    | type  | possible_keys     | key               | key_len | ref   | rows | Extra |
++------+-------------+----------+-------+-------------------+-------------------+---------+-------+------+-------+
+|    1 | SIMPLE      | personne | const | uq_personne_email | uq_personne_email | 402     | const | 1    |       |
++------+-------------+----------+-------+-------------------+-------------------+---------+-------+------+-------+
+1 row in set (0.000 sec)
+
++--------------------------------------+
+| etape                                |
++--------------------------------------+
+| A6 - jointure sur clés étrangères |
++--------------------------------------+
+1 row in set (0.000 sec)
+
++------+-------------+-------+------+------------------------+-----------------------+---------+----------------+------+---------------------------------+
+| id   | select_type | table | type | possible_keys          | key                   | key_len | ref            | rows | Extra                           |
++------+-------------+-------+------+------------------------+-----------------------+---------+----------------+------+---------------------------------+
+|    1 | SIMPLE      | f     | ALL  | PRIMARY                | NULL                  | NULL    | NULL           | 6    | Using temporary; Using filesort |
+|    1 | SIMPLE      | se    | ref  | PRIMARY,fk_seance_film | fk_seance_film        | 4       | cinedata.f.id  | 1    | Using index                     |
+|    1 | SIMPLE      | pr    | ref  | uq_place_seance_siege  | uq_place_seance_siege | 4       | cinedata.se.id | 1    | Using index                     |
++------+-------------+-------+------+------------------------+-----------------------+---------+----------------+------+---------------------------------+
+3 rows in set (0.001 sec)
+
++-------+------------+-------------------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table | Non_unique | Key_name                | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++-------+------------+-------------------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| siege |          0 | PRIMARY                 |            1 | id          | A         |         600 |     NULL | NULL   |      | BTREE      |         |               |
+| siege |          0 | uq_siege_position       |            1 | id_salle    | A         |           6 |     NULL | NULL   |      | BTREE      |         |               |
+| siege |          0 | uq_siege_position       |            2 | rangee      | A         |          75 |     NULL | NULL   |      | BTREE      |         |               |
+| siege |          0 | uq_siege_position       |            3 | numero      | A         |         600 |     NULL | NULL   |      | BTREE      |         |               |
+| siege |          1 | idx_siege_rangee_numero |            1 | rangee      | A         |          30 |     NULL | NULL   |      | BTREE      |         |               |
+| siege |          1 | idx_siege_rangee_numero |            2 | numero      | A         |         600 |     NULL | NULL   |      | BTREE      |         |               |
++-------+------------+-------------------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+6 rows in set (0.001 sec)
+
++-----------------------------------+
+| etape                             |
++-----------------------------------+
+| B - organigramme (CTE récursive) |
++-----------------------------------+
+1 row in set (0.000 sec)
+
++--------+------------------------+--------------------+---------------------------------------------------+
+| niveau | organigramme           | poste              | chemin                                            |
++--------+------------------------+--------------------+---------------------------------------------------+
+|      0 | Hélène Garnier       | Directrice         | Hélène Garnier                                  |
+|      1 |     Nicolas Petit      | Responsable caisse | Hélène Garnier > Nicolas Petit                  |
+|      2 |         Julien Leroy   | Caissier           | Hélène Garnier > Nicolas Petit > Julien Leroy   |
+|      2 |         Yasmine Haddad | Caissière         | Hélène Garnier > Nicolas Petit > Yasmine Haddad |
+|      1 |     Paul Fontaine      | Projectionniste    | Hélène Garnier > Paul Fontaine                  |
++--------+------------------------+--------------------+---------------------------------------------------+
+5 rows in set (0.001 sec)
+
+Query OK, 0 rows affected (0.017 sec)
+
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+
+Query OK, 0 rows affected (0.015 sec)
+
+Query OK, 0 rows affected (0.014 sec)
+
+Query OK, 0 rows affected (0.011 sec)
+
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+
+Query OK, 0 rows affected (0.010 sec)
+
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+
+Query OK, 0 rows affected (0.000 sec)
+
+Query OK, 0 rows affected (0.000 sec)
+
+Query OK, 1 row affected (0.002 sec)
+
+Query OK, 5 rows affected (0.005 sec)
+
+Query OK, 3 rows affected (0.002 sec)
+
+Query OK, 4 rows affected (0.001 sec)
+
+Query OK, 29 rows affected (0.008 sec)
+
+Query OK, 2 rows affected (0.001 sec)
+
+Query OK, 4 rows affected (0.001 sec)
+
+Query OK, 1 row affected (0.001 sec)
+
+Query OK, 1 row affected (0.000 sec)
+
+Query OK, 6 rows affected (0.001 sec)
+
+Query OK, 3 rows affected (0.000 sec)
+
++------------------------+
+| etape                  |
++------------------------+
+| C3 - audit du test T11 |
++------------------------+
+1 row in set (0.000 sec)
+
++-----------+-------------+--------------+------------------------+
+| id_seance | ancien_prix | nouveau_prix | modifie_par            |
++-----------+-------------+--------------+------------------------+
+|         1 |       11.50 |        11.00 | cinedata_dev@localhost |
++-----------+-------------+--------------+------------------------+
+1 row in set (0.000 sec)
+
+Query OK, 0 rows affected, 1 warning (0.003 sec)
+
++---------------------+
+| etape               |
++---------------------+
+| D - bilan des tests |
++---------------------+
+1 row in set (0.000 sec)
+
++-----+-----------------------------------------+---------+---------+---------+-------------------------------------------------------------------------------------+
+| num | test                                    | attendu | obtenu  | statut  | message                                                                             |
++-----+-----------------------------------------+---------+---------+---------+-------------------------------------------------------------------------------------+
+|   1 | T1  prix négatif (CHECK R5)            | erreur  | erreur  | RÉUSSI | CONSTRAINT `chk_seance_prix` failed for `cinedata`.`seance`                         |
+|   2 | T2  siège déjà réservé (UNIQUE R1) | erreur  | erreur  | RÉUSSI | Duplicate entry '1-492' for key 'uq_place_seance_siege'                             |
+|   3 | T3  séance qui chevauche (trigger R3)  | erreur  | erreur  | RÉUSSI | R3 : cette séance chevauche une autre séance dans la même salle                  |
+|   4 | T4  séance valide un autre jour        | succès | succès | RÉUSSI |                                                                                     |
+|   5 | T5  plus de 10 places (trigger R2)      | erreur  | erreur  | RÉUSSI | R2 : une réservation contient au maximum 10 places                                 |
+|   6 | T6  séance incohérente (trigger)      | erreur  | erreur  | RÉUSSI | Incohérence : la séance de la place ne correspond pas à celle de la réservation |
+|   7 | T7  siège d'une autre salle (trigger)  | erreur  | erreur  | RÉUSSI | Incohérence : ce siège n'appartient pas à la salle de la séance                 |
+|   8 | T8  e-mail en double (UNIQUE R10)       | erreur  | erreur  | RÉUSSI | Duplicate entry 'karim.benali@mail.fr' for key 'uq_personne_email'                  |
+|   9 | T9  avis noté 6 sur 5 (CHECK)          | erreur  | erreur  | RÉUSSI | CONSTRAINT `chk_avis_note` failed for `cinedata`.`avis`                             |
+|  10 | T10 place valide                        | succès | succès | RÉUSSI |                                                                                     |
+|  11 | T11 changement de prix valide           | succès | succès | RÉUSSI |                                                                                     |
++-----+-----------------------------------------+---------+---------+---------+-------------------------------------------------------------------------------------+
+11 rows in set (0.000 sec)
+
++----------+---------+---------+
+| nb_tests | reussis | echoues |
++----------+---------+---------+
+|       11 |      11 |       0 |
++----------+---------+---------+
+1 row in set (0.000 sec)
+
+MariaDB [cinedata]> notee
