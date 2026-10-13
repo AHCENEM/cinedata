@@ -1,0 +1,84 @@
+MariaDB [cinedata]> SOURCE D:/mon-projet/cinedata/sql/06_transactions.sql;
+Query OK, 0 rows affected (0.000 sec)
+
+Database changed
+Query OK, 0 rows affected, 1 warning (0.010 sec)
+
+Query OK, 0 rows affected (0.008 sec)
+
+Query OK, 1 row affected (0.003 sec)
+
+Query OK, 1 row affected (0.003 sec)
+
+Query OK, 9 rows affected (0.005 sec)
+
++------------+-------------------------------------------------------+
+| test       | resultat                                              |
++------------+-------------------------------------------------------+
+| T1 succès | OK : réservation 17 confirmée, siège L1, 12.00 € |
++------------+-------------------------------------------------------+
+1 row in set (0.000 sec)
+
+Query OK, 4 rows affected (0.001 sec)
+
++----------------+------------------------------------------------+
+| test           | resultat                                       |
++----------------+------------------------------------------------+
+| T2 siège pris | REFUS (R1) : le siège L1 est déjà réservé |
++----------------+------------------------------------------------+
+1 row in set (0.000 sec)
+
+Query OK, 2 rows affected (0.001 sec)
+
++---------+-------------------------------------------+
+| test    | resultat                                  |
++---------+-------------------------------------------+
+| T3 âge | REFUS (R6) : film -16, le client a 11 ans |
++---------+-------------------------------------------+
+1 row in set (0.000 sec)
+
+Query OK, 8 rows affected (0.004 sec)
+
++---------------------+--------------------------------------------------------------+
+| test                | resultat                                                     |
++---------------------+--------------------------------------------------------------+
+| T4 paiement refusé | PAIEMENT REFUSÉ : réservation 18 annulée, siège libéré |
++---------------------+--------------------------------------------------------------+
+1 row in set (0.000 sec)
+
+Query OK, 0 rows affected, 1 warning (0.001 sec)
+
++------------+-------------------------------------+
+| test       | resultat                            |
++------------+-------------------------------------+
+| T5 séance | REFUS : la séance 999 n'existe pas |
++------------+-------------------------------------+
+1 row in set (0.000 sec)
+
+Query OK, 2 rows affected, 1 warning (0.001 sec)
+
++----------------------+-----------------------------------------------------+
+| test                 | resultat                                            |
++----------------------+-----------------------------------------------------+
+| T6 siège inexistant | REFUS : le siège Z99 n'existe pas dans cette salle |
++----------------------+-----------------------------------------------------+
+1 row in set (0.000 sec)
+
+Query OK, 5 rows affected (0.003 sec)
+
++-------------------+----------------------------------------------------+
+| test              | resultat                                           |
++-------------------+----------------------------------------------------+
+| T7 tarif invalide | ERREUR technique : transaction annulée (ROLLBACK) |
++-------------------+----------------------------------------------------+
+1 row in set (0.000 sec)
+
++-------------+------------+-----------+----------+-----------+
+| reservation | statut     | nb_places | paiement | ticket    |
++-------------+------------+-----------+----------+-----------+
+|          17 | confirmée |         1 | accepté | TCK-00017 |
+|          18 | annulée   |         0 | refusé  | NULL      |
++-------------+------------+-----------+----------+-----------+
+2 rows in set (0.001 sec)
+
+MariaDB [cinedata]> notee
