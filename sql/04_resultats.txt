@@ -1,0 +1,273 @@
+MariaDB [cinedata]> SOURCE D:/mon-projet/cinedata/sql/04_requetes.sql;
+Query OK, 0 rows affected (0.001 sec)
+
+Database changed
++---------------------------+-------+----------------+
+| titre                     | duree | classification |
++---------------------------+-------+----------------+
+| Le Secret de Monte-Verde  |   170 | Tous publics   |
+| Les Dunes d'Argent        |   155 | Tous publics   |
+| Point de Rupture          |   128 | -16            |
+| Les Ombres du Phare       |   112 | -12            |
+| Nuit Blanche à Marseille |   105 | -12            |
+| Le Jardin des Lucioles    |    95 | Tous publics   |
++---------------------------+-------+----------------+
+6 rows in set (0.000 sec)
+
++--------------------------+-------+
+| titre                    | duree |
++--------------------------+-------+
+| Les Dunes d'Argent       |   155 |
+| Le Secret de Monte-Verde |   170 |
+| Point de Rupture         |   128 |
++--------------------------+-------+
+3 rows in set (0.000 sec)
+
++---------+----------+------------------------------------+
+| prenom  | nom      | adresse                            |
++---------+----------+------------------------------------+
+| Karim   | Benali   | 12 rue Oberkampf, 75011 Paris      |
+| Linh    | Nguyen   | 21 boulevard Voltaire, 75011 Paris |
+| Hugo    | Lefèvre | 17 rue Lecourbe, 75015 Paris       |
+| Aminata | Diallo   | 9 place d'Italie, 75013 Paris      |
+| Marco   | Rossi    | 44 rue du Bac, 75007 Paris         |
++---------+----------+------------------------------------+
+5 rows in set (0.000 sec)
+
++----+---------------------+-----------+
+| id | date_heure_debut    | prix_base |
++----+---------------------+-----------+
+|  6 | 2026-10-03 20:00:00 |     10.50 |
+|  7 | 2026-10-04 15:00:00 |      9.50 |
+|  8 | 2026-10-10 21:00:00 |     10.50 |
+|  9 | 2026-10-11 20:00:00 |     11.50 |
+| 10 | 2026-10-17 21:30:00 |     10.00 |
+| 11 | 2026-10-24 20:00:00 |     12.00 |
+| 12 | 2026-10-25 14:30:00 |      9.50 |
++----+---------------------+-----------+
+7 rows in set (0.000 sec)
+
++---------------------------+----------------+
+| titre                     | classification |
++---------------------------+----------------+
+| Nuit Blanche à Marseille | -12            |
+| Point de Rupture          | -16            |
+| Les Ombres du Phare       | -12            |
++---------------------------+----------------+
+3 rows in set (0.000 sec)
+
++----+------------+
+| id | poste      |
++----+------------+
+|  9 | Directrice |
++----+------------+
+1 row in set (0.000 sec)
+
++----+---------------------+-----------+
+| id | date_heure_debut    | prix_base |
++----+---------------------+-----------+
+| 11 | 2026-10-24 20:00:00 |     12.00 |
+|  1 | 2026-09-05 20:00:00 |     11.50 |
+|  9 | 2026-10-11 20:00:00 |     11.50 |
++----+---------------------+-----------+
+3 rows in set (0.000 sec)
+
++----------+---------------+------------+-----------+
+| nb_films | duree_moyenne | plus_court | plus_long |
++----------+---------------+------------+-----------+
+|        6 |           128 |         95 |       170 |
++----------+---------------+------------+-----------+
+1 row in set (0.000 sec)
+
++----------+------------+
+| salle    | nb_seances |
++----------+------------+
+| Méliès |          5 |
+| Lumière |          3 |
+| Odyssée |          4 |
++----------+------------+
+3 rows in set (0.000 sec)
+
++----------+------------+
+| salle    | nb_seances |
++----------+------------+
+| Méliès |          5 |
+| Odyssée |          4 |
++----------+------------+
+2 rows in set (0.000 sec)
+
++---------------------------+----------------+
+| titre                     | realisateur    |
++---------------------------+----------------+
+| Les Dunes d'Argent        | Claire Vasseur |
+| Le Secret de Monte-Verde  | Malik Benhamou |
+| Nuit Blanche à Marseille | Inès Roche    |
+| Le Jardin des Lucioles    | Kenji Morita   |
+| Point de Rupture          | Paul Arnaud    |
+| Les Ombres du Phare       | Claire Vasseur |
++---------------------------+----------------+
+6 rows in set (0.000 sec)
+
++---------------------------+---------------------------+
+| titre                     | genres                    |
++---------------------------+---------------------------+
+| Les Dunes d'Argent        | Aventure, Science-fiction |
+| Le Secret de Monte-Verde  | Aventure, Drame           |
+| Nuit Blanche à Marseille | Policier, Thriller        |
+| Le Jardin des Lucioles    | Animation, Famille        |
+| Point de Rupture          | Thriller                  |
+| Les Ombres du Phare       | Drame                     |
++---------------------------+---------------------------+
+6 rows in set (0.001 sec)
+
++---------------------+---------------------------+----------+---------+-----------+
+| date_heure_debut    | titre                     | salle    | version | prix_base |
++---------------------+---------------------------+----------+---------+-----------+
+| 2026-09-05 20:00:00 | Les Dunes d'Argent        | Odyssée | VF      |     11.50 |
+| 2026-09-06 14:00:00 | Le Jardin des Lucioles    | Méliès | VF      |      9.50 |
+| 2026-09-12 20:30:00 | Le Secret de Monte-Verde  | Lumière | VOSTFR  |     10.50 |
+| 2026-09-19 21:00:00 | Nuit Blanche à Marseille | Méliès | VF      |     10.00 |
+| 2026-09-26 18:00:00 | Les Dunes d'Argent        | Odyssée | VF      |     11.50 |
+| 2026-10-03 20:00:00 | Le Secret de Monte-Verde  | Lumière | VF      |     10.50 |
+| 2026-10-04 15:00:00 | Le Jardin des Lucioles    | Méliès | VF      |      9.50 |
+| 2026-10-10 21:00:00 | Point de Rupture          | Lumière | VOSTFR  |     10.50 |
+| 2026-10-11 20:00:00 | Les Dunes d'Argent        | Odyssée | VF      |     11.50 |
+| 2026-10-17 21:30:00 | Nuit Blanche à Marseille | Méliès | VF      |     10.00 |
+| 2026-10-24 20:00:00 | Point de Rupture          | Odyssée | VF      |     12.00 |
+| 2026-10-25 14:30:00 | Le Jardin des Lucioles    | Méliès | VF      |      9.50 |
++---------------------+---------------------------+----------+---------+-----------+
+12 rows in set (0.001 sec)
+
++---------------------------+------------+
+| titre                     | nb_seances |
++---------------------------+------------+
+| Les Ombres du Phare       |          0 |
+| Le Secret de Monte-Verde  |          2 |
+| Point de Rupture          |          2 |
+| Nuit Blanche à Marseille |          2 |
+| Les Dunes d'Argent        |          3 |
+| Le Jardin des Lucioles    |          3 |
++---------------------------+------------+
+6 rows in set (0.001 sec)
+
++--------+-------+
+| prenom | nom   |
++--------+-------+
+| Marco  | Rossi |
++--------+-------+
+1 row in set (0.000 sec)
+
++-------------+--------------+--------------------------+---------------------+----------+-------+-------+-------+
+| reservation | client       | titre                    | date_heure_debut    | salle    | siege | tarif | prix  |
++-------------+--------------+--------------------------+---------------------+----------+-------+-------+-------+
+|           9 | Julie Martin | Le Secret de Monte-Verde | 2026-10-03 20:00:00 | Lumière | B8    | plein | 10.50 |
+|           9 | Julie Martin | Le Secret de Monte-Verde | 2026-10-03 20:00:00 | Lumière | B9    | plein | 10.50 |
+|           9 | Julie Martin | Le Secret de Monte-Verde | 2026-10-03 20:00:00 | Lumière | B10   | plein | 10.50 |
+|           9 | Julie Martin | Le Secret de Monte-Verde | 2026-10-03 20:00:00 | Lumière | B11   | plein | 10.50 |
++-------------+--------------+--------------------------+---------------------+----------+-------+-------+-------+
+4 rows in set (0.001 sec)
+
++--------------------+-------------------+
+| poste              | equipe            |
++--------------------+-------------------+
+| Directrice         | NULL              |
+| Responsable caisse | Accueil et caisse |
+| Caissière         | Accueil et caisse |
+| Caissier           | Accueil et caisse |
+| Projectionniste    | Technique         |
++--------------------+-------------------+
+5 rows in set (0.001 sec)
+
++--------------------+---------------------+-----------+
+| titre              | date_heure_debut    | prix_base |
++--------------------+---------------------+-----------+
+| Les Dunes d'Argent | 2026-09-05 20:00:00 |     11.50 |
+| Les Dunes d'Argent | 2026-09-26 18:00:00 |     11.50 |
+| Les Dunes d'Argent | 2026-10-11 20:00:00 |     11.50 |
+| Point de Rupture   | 2026-10-24 20:00:00 |     12.00 |
++--------------------+---------------------+-----------+
+4 rows in set (0.001 sec)
+
++---------------------+
+| titre               |
++---------------------+
+| Les Ombres du Phare |
++---------------------+
+1 row in set (0.001 sec)
+
++--------------+
+| panier_moyen |
++--------------+
+|        16.21 |
++--------------+
+1 row in set (0.001 sec)
+
++---------+------------------+--------------+
+| mois    | chiffre_affaires | nb_paiements |
++---------+------------------+--------------+
+| 2026-09 |           153.20 |            8 |
+| 2026-10 |            73.80 |            6 |
++---------+------------------+--------------+
+2 rows in set (0.000 sec)
+
++---------------------------+----------------+------------------+
+| titre                     | places_vendues | chiffre_affaires |
++---------------------------+----------------+------------------+
+| Le Jardin des Lucioles    |              8 |            55.10 |
+| Le Secret de Monte-Verde  |              7 |            71.40 |
+| Les Dunes d'Argent        |              7 |            73.60 |
+| Point de Rupture          |              2 |            18.90 |
+| Nuit Blanche à Marseille |              1 |             8.00 |
++---------------------------+----------------+------------------+
+5 rows in set (0.001 sec)
+
++--------+---------------------------+----------+----------+----------------+----------------------+
+| seance | titre                     | salle    | capacite | places_vendues | taux_remplissage_pct |
++--------+---------------------------+----------+----------+----------------+----------------------+
+|      7 | Le Jardin des Lucioles    | Méliès |      120 |              5 |                 4.17 |
+|      2 | Le Jardin des Lucioles    | Méliès |      120 |              3 |                 2.50 |
+|      6 | Le Secret de Monte-Verde  | Lumière |      180 |              4 |                 2.22 |
+|      3 | Le Secret de Monte-Verde  | Lumière |      180 |              3 |                 1.67 |
+|      8 | Point de Rupture          | Lumière |      180 |              2 |                 1.11 |
+|      1 | Les Dunes d'Argent        | Odyssée |      300 |              3 |                 1.00 |
+|      4 | Nuit Blanche à Marseille | Méliès |      120 |              1 |                 0.83 |
+|      5 | Les Dunes d'Argent        | Odyssée |      300 |              2 |                 0.67 |
+|      9 | Les Dunes d'Argent        | Odyssée |      300 |              2 |                 0.67 |
+|     11 | Point de Rupture          | Odyssée |      300 |              0 |                 0.00 |
+|     12 | Le Jardin des Lucioles    | Méliès |      120 |              0 |                 0.00 |
+|     10 | Nuit Blanche à Marseille | Méliès |      120 |              0 |                 0.00 |
++--------+---------------------------+----------+----------+----------------+----------------------+
+12 rows in set (0.001 sec)
+
++---------+--------------+--------+
+| moyen   | nb_paiements | total  |
++---------+--------------+--------+
+| CB      |           12 | 185.20 |
+| ESPECES |            2 |  41.80 |
++---------+--------------+--------+
+2 rows in set (0.001 sec)
+
++---------+----------+-----------------+------------------+
+| prenom  | nom      | nb_reservations | segment          |
++---------+----------+-----------------+------------------+
+| Karim   | Benali   |               3 | Client fidèle   |
+| Linh    | Nguyen   |               3 | Client fidèle   |
+| Thomas  | Dubois   |               2 | Client régulier |
+| Hugo    | Lefèvre |               2 | Client régulier |
+| Julie   | Martin   |               2 | Client régulier |
+| Sofia   | Moreau   |               1 | Nouveau client   |
+| Aminata | Diallo   |               1 | Nouveau client   |
+| Marco   | Rossi    |               0 | Inactif          |
++---------+----------+-----------------+------------------+
+8 rows in set (0.001 sec)
+
++--------+-----------+-------------+
+| tarif  | nb_places | pourcentage |
++--------+-----------+-------------+
+| enfant |         5 |        20.0 |
+| plein  |        13 |        52.0 |
+| reduit |         7 |        28.0 |
++--------+-----------+-------------+
+3 rows in set (0.001 sec)
+
+MariaDB [cinedata]> notee
