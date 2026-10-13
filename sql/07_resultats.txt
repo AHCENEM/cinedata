@@ -1,0 +1,123 @@
+MariaDB [(none)]> SOURCE D:/mon-projet/cinedata/sql/07_roles.sql;
+Query OK, 0 rows affected (0.000 sec)
+
+Query OK, 0 rows affected, 3 warnings (0.005 sec)
+
+Query OK, 0 rows affected, 3 warnings (0.000 sec)
+
+Query OK, 0 rows affected (0.005 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.004 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.011 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.002 sec)
+
+Query OK, 0 rows affected (0.002 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
++---------------------------------------------------------------------------+
+| Grants for role_caissier                                                  |
++---------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `role_caissier`                                     |
+| GRANT SELECT ON `cinedata`.`reservation` TO `role_caissier`               |
+| GRANT SELECT ON `cinedata`.`seance` TO `role_caissier`                    |
+| GRANT SELECT ON `cinedata`.`salle` TO `role_caissier`                     |
+| GRANT SELECT ON `cinedata`.`film` TO `role_caissier`                      |
+| GRANT EXECUTE ON PROCEDURE `cinedata`.`reserver_place` TO `role_caissier` |
++---------------------------------------------------------------------------+
+6 rows in set (0.000 sec)
+
++---------------------------------------------------------------------------------+
+| Grants for role_manager                                                         |
++---------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `role_manager`                                            |
+| GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE ON `cinedata`.* TO `role_manager` |
++---------------------------------------------------------------------------------+
+2 rows in set (0.000 sec)
+
++----------------------------------------------------------------+
+| Grants for role_analyste                                       |
++----------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `role_analyste`                          |
+| GRANT SELECT ON `cinedata`.`genre` TO `role_analyste`          |
+| GRANT SELECT ON `cinedata`.`film_genre` TO `role_analyste`     |
+| GRANT SELECT ON `cinedata`.`place_reservee` TO `role_analyste` |
+| GRANT SELECT ON `cinedata`.`paiement` TO `role_analyste`       |
+| GRANT SELECT ON `cinedata`.`seance` TO `role_analyste`         |
+| GRANT SELECT ON `cinedata`.`avis` TO `role_analyste`           |
+| GRANT SELECT ON `cinedata`.`salle` TO `role_analyste`          |
+| GRANT SELECT ON `cinedata`.`film` TO `role_analyste`           |
+| GRANT SELECT ON `cinedata`.`reservation` TO `role_analyste`    |
++----------------------------------------------------------------+
+10 rows in set (0.000 sec)
+
++-----------------------------------------------------------------------------------------------------------------------+
+| Grants for caisse_yasmine@localhost                                                                                   |
++-----------------------------------------------------------------------------------------------------------------------+
+| GRANT `role_caissier` TO `caisse_yasmine`@`localhost`                                                                 |
+| GRANT USAGE ON *.* TO `caisse_yasmine`@`localhost` IDENTIFIED BY PASSWORD '*23981B513C1CDA6CD609205F794BDE13854233F6' |
+| SET DEFAULT ROLE `role_caissier` FOR `caisse_yasmine`@`localhost`                                                     |
++-----------------------------------------------------------------------------------------------------------------------+
+3 rows in set (0.000 sec)
+
++----------------+---------+---------------+
+| User           | is_role | default_role  |
++----------------+---------+---------------+
+| role_caissier  | Y       |               |
+| role_manager   | Y       |               |
+| role_analyste  | Y       |               |
+| caisse_yasmine | N       | role_caissier |
+| manager_helene | N       | role_manager  |
+| analyste_data  | N       | role_analyste |
++----------------+---------+---------------+
+6 rows in set (0.002 sec)
+
+MariaDB [(none)]> notee
