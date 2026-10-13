@@ -1,0 +1,170 @@
+MariaDB [cinedata]> SOURCE D:/mon-projet/cinedata/sql/05_update_delete.sql;
+Query OK, 0 rows affected (0.000 sec)
+
+Database changed
+Query OK, 0 rows affected (0.000 sec)
+
++-----------+----+------------+
+| etape     | id | statut     |
++-----------+----+------------+
+| 1 - avant | 15 | en attente |
++-----------+----+------------+
+1 row in set (0.000 sec)
+
+Query OK, 1 row affected (0.002 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
++------------+----+------------+
+| etape      | id | statut     |
++------------+----+------------+
+| 1 - après | 15 | confirmée |
++------------+----+------------+
+1 row in set (0.000 sec)
+
++-----------+---------+--------+
+| etape     | numero  | points |
++-----------+---------+--------+
+| 2 - avant | CF-0001 |    120 |
++-----------+---------+--------+
+1 row in set (0.001 sec)
+
+Query OK, 1 row affected (0.000 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
++------------+---------+--------+
+| etape      | numero  | points |
++------------+---------+--------+
+| 2 - après | CF-0001 |    170 |
++------------+---------+--------+
+1 row in set (0.000 sec)
+
++-----------+----+---------------------+-----------+
+| etape     | id | date_heure_debut    | prix_base |
++-----------+----+---------------------+-----------+
+| 3 - avant |  9 | 2026-10-11 20:00:00 |     11.50 |
+| 3 - avant | 11 | 2026-10-24 20:00:00 |     12.00 |
++-----------+----+---------------------+-----------+
+2 rows in set (0.000 sec)
+
+Query OK, 2 rows affected (0.000 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
++------------+----+---------------------+-----------+
+| etape      | id | date_heure_debut    | prix_base |
++------------+----+---------------------+-----------+
+| 3 - après |  9 | 2026-10-11 20:00:00 |     12.65 |
+| 3 - après | 11 | 2026-10-24 20:00:00 |     13.20 |
++------------+----+---------------------+-----------+
+2 rows in set (0.000 sec)
+
++-----------+---------+-----------+--------+
+| etape     | numero  | id_client | points |
++-----------+---------+-----------+--------+
+| 4 - avant | CF-0001 |         1 |    170 |
+| 4 - avant | CF-0002 |         4 |     40 |
+| 4 - avant | CF-0003 |         7 |      0 |
++-----------+---------+-----------+--------+
+3 rows in set (0.000 sec)
+
+Query OK, 3 rows affected (0.001 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+
++------------+---------+-----------+--------+
+| etape      | numero  | id_client | points |
++------------+---------+-----------+--------+
+| 4 - après | CF-0001 |         1 |    270 |
+| 4 - après | CF-0002 |         4 |    140 |
+| 4 - après | CF-0003 |         7 |     10 |
++------------+---------+-----------+--------+
+3 rows in set (0.000 sec)
+
+ERROR 4025 (23000): CONSTRAINT `chk_carte_points` failed for `cinedata`.`carte_fidelite`
++-----------+---------+
+| etape     | nb_avis |
++-----------+---------+
+| 6 - avant |       6 |
++-----------+---------+
+1 row in set (0.003 sec)
+
+Query OK, 1 row affected (0.001 sec)
+
++------------+---------+
+| etape      | nb_avis |
++------------+---------+
+| 6 - après |       5 |
++------------+---------+
+1 row in set (0.000 sec)
+
++-----------+----------------+
+| etape     | places_resa_15 |
++-----------+----------------+
+| 7 - avant |              2 |
++-----------+----------------+
+1 row in set (0.000 sec)
+
+Query OK, 1 row affected (0.001 sec)
+
++------------+----------------+
+| etape      | places_resa_15 |
++------------+----------------+
+| 7 - après |              0 |
++------------+----------------+
+1 row in set (0.000 sec)
+
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`cinedata`.`seance`, CONSTRAINT `fk_seance_film` FOREIGN KEY (`id_film`) REFERENCES `film` (`id`))
++-----------+----------+---------------+------------+
+| etape     | nb_films | nb_film_genre | nb_casting |
++-----------+----------+---------------+------------+
+| 9 - avant |        6 |            10 |          9 |
++-----------+----------+---------------+------------+
+1 row in set (0.006 sec)
+
+Query OK, 1 row affected (0.000 sec)
+
++------------+----------+---------------+------------+
+| etape      | nb_films | nb_film_genre | nb_casting |
++------------+----------+---------------+------------+
+| 9 - après |        5 |             9 |          8 |
++------------+----------+---------------+------------+
+1 row in set (0.000 sec)
+
+Query OK, 0 rows affected (0.000 sec)
+
++-------------+---------+
+| etape       | nb_avis |
++-------------+---------+
+| 10 - après |       5 |
++-------------+---------+
+1 row in set (0.000 sec)
+
+Query OK, 1 row affected (0.001 sec)
+
+Query OK, 2 rows affected (0.001 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
++------------+----------------+
+| etape      | sieges_salle_4 |
++------------+----------------+
+| 11 - avant |              2 |
++------------+----------------+
+1 row in set (0.000 sec)
+
+Query OK, 1 row affected (0.000 sec)
+
++-------------+----------------+
+| etape       | sieges_salle_4 |
++-------------+----------------+
+| 11 - après |              0 |
++-------------+----------------+
+1 row in set (0.000 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
++-----------------+----------+-----------------+---------+-----------------+
+| etape           | nb_films | nb_reservations | nb_avis | points_client_1 |
++-----------------+----------+-----------------+---------+-----------------+
+| après ROLLBACK |        6 |              16 |       6 |             120 |
++-----------------+----------+-----------------+---------+-----------------+
+1 row in set (0.005 sec)
+
+MariaDB [cinedata]> notee
