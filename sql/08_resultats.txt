@@ -1,0 +1,85 @@
+MariaDB [(none)]> SOURCE D:/mon-projet/cinedata/sql/08_vues.sql;
+Query OK, 0 rows affected (0.000 sec)
+
+Database changed
+Query OK, 0 rows affected (0.014 sec)
+
+Query OK, 0 rows affected (0.005 sec)
+
+Query OK, 0 rows affected (0.005 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
+Query OK, 0 rows affected (0.003 sec)
+
++-------------------------+------------+
+| Tables_in_cinedata      | Table_type |
++-------------------------+------------+
+| vue_clients_masques     | VIEW       |
+| vue_details_reservation | VIEW       |
+| vue_stats_seances       | VIEW       |
++-------------------------+------------+
+3 rows in set (0.002 sec)
+
++-----------+---------+------------+---------------+------------------+------+-------------+------------------+
+| id_client | prenom  | nom_masque | email_masque  | telephone_masque | age  | code_postal | date_inscription |
++-----------+---------+------------+---------------+------------------+------+-------------+------------------+
+|         1 | Karim   | B.         | ka***@mail.fr | ********01       |   36 | 75011       | 2024-11-02       |
+|         2 | Julie   | M.         | ju***@mail.fr | ********02       |   41 | 93100       | 2025-02-14       |
+|         3 | Thomas  | D.         | th***@mail.fr | ********03       |   25 | 92100       | 2025-05-20       |
+|         4 | Linh    | N.         | li***@mail.fr | ********04       |   31 | 75011       | 2025-01-08       |
+|         5 | Sofia   | M.         | so***@mail.fr | ********05       |   16 | 94300       | 2026-03-30       |
+|         6 | Hugo    | L.         | hu***@mail.fr | ********06       |   47 | 75015       | 2024-12-12       |
+|         7 | Aminata | D.         | am***@mail.fr | ********07       |   26 | 75013       | 2026-09-10       |
+|         8 | Marco   | R.         | ma***@mail.fr | ********08       |   38 | 75007       | 2026-06-01       |
+|        14 | Léo    | P.         | le***@mail.fr | NULL             |   11 | 75005       | 2026-10-13       |
++-----------+---------+------------+---------------+------------------+------+-------------+------------------+
+9 rows in set (0.002 sec)
+
++-------------+---------------------+------------+--------------+--------------------------+---------------------+----------+-------+-------+-------+
+| reservation | date_reservation    | statut     | client       | film                     | seance              | salle    | siege | tarif | prix  |
++-------------+---------------------+------------+--------------+--------------------------+---------------------+----------+-------+-------+-------+
+|           9 | 2026-09-30 19:00:00 | confirmée | Julie Martin | Le Secret de Monte-Verde | 2026-10-03 20:00:00 | Lumière | B8    | plein | 10.50 |
+|           9 | 2026-09-30 19:00:00 | confirmée | Julie Martin | Le Secret de Monte-Verde | 2026-10-03 20:00:00 | Lumière | B9    | plein | 10.50 |
+|           9 | 2026-09-30 19:00:00 | confirmée | Julie Martin | Le Secret de Monte-Verde | 2026-10-03 20:00:00 | Lumière | B10   | plein | 10.50 |
+|           9 | 2026-09-30 19:00:00 | confirmée | Julie Martin | Le Secret de Monte-Verde | 2026-10-03 20:00:00 | Lumière | B11   | plein | 10.50 |
++-------------+---------------------+------------+--------------+--------------------------+---------------------+----------+-------+-------+-------+
+4 rows in set (0.002 sec)
+
++-----------+---------------------------+----------+----------------+------------------+----------------------+
+| id_seance | film                      | salle    | places_vendues | chiffre_affaires | taux_remplissage_pct |
++-----------+---------------------------+----------+----------------+------------------+----------------------+
+|         7 | Le Jardin des Lucioles    | Méliès |              5 |            34.20 |                 4.17 |
+|         2 | Le Jardin des Lucioles    | Méliès |              3 |            20.90 |                 2.50 |
+|         6 | Le Secret de Monte-Verde  | Lumière |              4 |            42.00 |                 2.22 |
+|         3 | Le Secret de Monte-Verde  | Lumière |              3 |            29.40 |                 1.67 |
+|         8 | Point de Rupture          | Lumière |              2 |            18.90 |                 1.11 |
+|         1 | Les Dunes d'Argent        | Odyssée |              3 |            32.20 |                 1.00 |
+|        12 | Le Jardin des Lucioles    | Méliès |              1 |             9.50 |                 0.83 |
+|         4 | Nuit Blanche à Marseille | Méliès |              1 |             8.00 |                 0.83 |
+|         5 | Les Dunes d'Argent        | Odyssée |              2 |            20.70 |                 0.67 |
+|         9 | Les Dunes d'Argent        | Odyssée |              2 |            20.70 |                 0.67 |
+|        11 | Point de Rupture          | Odyssée |              1 |            12.00 |                 0.33 |
+|        10 | Nuit Blanche à Marseille | Méliès |              0 |             0.00 |                 0.00 |
++-----------+---------------------------+----------+----------------+------------------+----------------------+
+12 rows in set (0.002 sec)
+
++---------------------------------------------------------------------+
+| Grants for role_analyste                                            |
++---------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `role_analyste`                               |
+| GRANT SELECT ON `cinedata`.`genre` TO `role_analyste`               |
+| GRANT SELECT ON `cinedata`.`film_genre` TO `role_analyste`          |
+| GRANT SELECT ON `cinedata`.`vue_stats_seances` TO `role_analyste`   |
+| GRANT SELECT ON `cinedata`.`place_reservee` TO `role_analyste`      |
+| GRANT SELECT ON `cinedata`.`seance` TO `role_analyste`              |
+| GRANT SELECT ON `cinedata`.`avis` TO `role_analyste`                |
+| GRANT SELECT ON `cinedata`.`salle` TO `role_analyste`               |
+| GRANT SELECT ON `cinedata`.`film` TO `role_analyste`                |
+| GRANT SELECT ON `cinedata`.`reservation` TO `role_analyste`         |
+| GRANT SELECT ON `cinedata`.`vue_clients_masques` TO `role_analyste` |
+| GRANT SELECT ON `cinedata`.`paiement` TO `role_analyste`            |
++---------------------------------------------------------------------+
+12 rows in set (0.000 sec)
+
+MariaDB [cinedata]> notee
