@@ -1,0 +1,642 @@
+******** REQU TE *********
+SET client_encoding = 'UTF8';
+**************************
+
+SET
+******** REQU TE *********
+DROP DATABASE IF EXISTS cinedata_pg;
+**************************
+
+DROP DATABASE
+******** REQU TE *********
+CREATE DATABASE cinedata_pg ENCODING 'UTF8';
+**************************
+
+CREATE DATABASE
+******** REQU TE *********
+SET client_encoding = 'UTF8';
+**************************
+
+SET
+******** REQU TE *********
+CREATE TYPE adresse_t AS (
+  rue         VARCHAR(100),
+  code_postal CHAR(5),
+  ville       VARCHAR(50)
+);
+**************************
+
+CREATE TYPE
+******** REQU TE *********
+CREATE TYPE classification_t AS ENUM ('Tous publics', '-12', '-16', '-18');
+**************************
+
+CREATE TYPE
+******** REQU TE *********
+CREATE TABLE personne (
+  id             SERIAL,
+  nom            VARCHAR(50)  NOT NULL,
+  prenom         VARCHAR(50)  NOT NULL,
+  date_naissance DATE,
+  email          VARCHAR(100) NOT NULL,
+  adresse        adresse_t,                 -- colonne de type compos√©
+  PRIMARY KEY (id),
+  UNIQUE (email)
+);
+**************************
+
+CREATE TABLE
+******** REQU TE *********
+CREATE TABLE client (
+  date_inscription DATE NOT NULL DEFAULT CURRENT_DATE,
+  PRIMARY KEY (id)                          -- la PK n'est PAS h√©rit√©e : on la red√©clare
+) INHERITS (personne);
+**************************
+
+CREATE TABLE
+******** REQU TE *********
+CREATE TABLE employe (
+  poste          VARCHAR(50)  NOT NULL,
+  salaire        NUMERIC(8,2) CHECK (salaire >= 0),
+  id_responsable INT,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id_responsable) REFERENCES employe(id)
+) INHERITS (personne);
+**************************
+
+CREATE TABLE
+******** REQU TE *********
+INSERT INTO client (nom, prenom, date_naissance, email, adresse, date_inscription) VALUES
+  ('Benali', 'Karim', '1990-04-12', 'karim.benali@mail.fr',
+     ROW('12 rue Oberkampf', '75011', 'Paris')::adresse_t, '2024-11-02'),
+  ('Martin', 'Julie', '1985-09-30', 'julie.martin@mail.fr',
+     ROW('5 avenue Jean Jaur√®s', '93100', 'Montreuil')::adresse_t, '2025-02-14'),
+  ('Moreau', 'Sofia', '2010-05-21', 'sofia.moreau@mail.fr',
+     ROW('3 rue des Lilas', '94300', 'Vincennes')::adresse_t, '2026-03-30');
+**************************
+
+INSERT 0 3
+******** REQU TE *********
+INSERT INTO employe (nom, prenom, date_naissance, email, adresse, poste, salaire, id_responsable) VALUES
+  ('Garnier', 'H√©l√®ne', '1975-03-02', 'helene.garnier@cinedata.fr',
+     ROW('8 rue de Rivoli', '75004', 'Paris')::adresse_t, 'Directrice', 4200, NULL);
+**************************
+
+INSERT 0 1
+******** REQU TE *********
+INSERT INTO employe (nom, prenom, date_naissance, email, adresse, poste, salaire, id_responsable)
+SELECT 'Haddad', 'Yasmine', '1998-01-11', 'yasmine.haddad@cinedata.fr',
+       ROW('40 rue de Belleville', '75020', 'Paris')::adresse_t, 'Caissi√®re', 1900, id
+FROM employe WHERE nom = 'Garnier';
+**************************
+
+INSERT 0 1
+******** REQU TE *********
+SELECT '2a - polymorphisme : SELECT FROM personne' AS etape;
+**************************
+
+                   etape                   
+-------------------------------------------
+ 2a - polymorphisme : SELECT FROM personne
+(1 ligne)
+
+******** REQU TE *********
+SELECT p.id, p.prenom, p.nom, p.tableoid::regclass AS table_origine
+FROM personne p
+ORDER BY p.id;
+**************************
+
+ id | prenom  |   nom   | table_origine 
+----+---------+---------+---------------
+  1 | Karim   | Benali  | client
+  2 | Julie   | Martin  | client
+  3 | Sofia   | Moreau  | client
+  4 | H√©l√®ne  | Garnier | employe
+  5 | Yasmine | Haddad  | employe
+(5 lignes)
+
+******** REQU TE *********
+SELECT '2b - SELECT FROM ONLY personne' AS etape;
+**************************
+
+             etape              
+--------------------------------
+ 2b - SELECT FROM ONLY personne
+(1 ligne)
+
+******** REQU TE *********
+SELECT COUNT(*) AS nb_personnes_pures FROM ONLY personne;
+**************************
+
+ nb_personnes_pures 
+--------------------
+                  0
+(1 ligne)
+
+******** REQU TE *********
+SELECT '2c - acc√®s au type compos√©' AS etape;
+**************************
+
+           etape            
+----------------------------
+ 2c - acc√®s au type compos√©
+(1 ligne)
+
+******** REQU TE *********
+SELECT prenom, (adresse).ville AS ville, (adresse).code_postal AS cp
+FROM personne
+ORDER BY (adresse).ville;
+**************************
+
+ prenom  |   ville   |  cp   
+---------+-----------+-------
+ Julie   | Montreuil | 93100
+ Karim   | Paris     | 75011
+ H√©l√®ne  | Paris     | 75004
+ Yasmine | Paris     | 75020
+ Sofia   | Vincennes | 94300
+(5 lignes)
+
+******** REQU TE *********
+UPDATE client SET adresse.ville = 'Paris', adresse.code_postal = '75020'
+WHERE email = 'julie.martin@mail.fr';
+**************************
+
+UPDATE 1
+******** REQU TE *********
+SELECT '2d - apr√®s UPDATE de adresse.ville' AS etape;
+**************************
+
+               etape                
+------------------------------------
+ 2d - apr√®s UPDATE de adresse.ville
+(1 ligne)
+
+******** REQU TE *********
+SELECT prenom, adresse FROM client WHERE email = 'julie.martin@mail.fr';
+**************************
+
+ prenom |               adresse                
+--------+--------------------------------------
+ Julie  | ("5 avenue Jean Jaur√®s",75020,Paris)
+(1 ligne)
+
+******** REQU TE *********
+INSERT INTO client (nom, prenom, email)
+VALUES ('Doublon', 'Test', 'helene.garnier@cinedata.fr');
+**************************
+
+INSERT 0 1
+******** REQU TE *********
+SELECT '2e - limite : e-mail en double accept√© entre tables filles' AS etape;
+**************************
+
+                           etape                            
+------------------------------------------------------------
+ 2e - limite : e-mail en double accept√© entre tables filles
+(1 ligne)
+
+******** REQU TE *********
+SELECT email, COUNT(*) AS nb, string_agg(tableoid::regclass::text, ', ') AS tables
+FROM personne
+GROUP BY email
+HAVING COUNT(*) > 1;
+**************************
+
+           email            | nb |     tables      
+----------------------------+----+-----------------
+ helene.garnier@cinedata.fr |  2 | client, employe
+(1 ligne)
+
+******** REQU TE *********
+DELETE FROM client WHERE nom = 'Doublon';
+**************************
+
+DELETE 1
+******** REQU TE *********
+CREATE FUNCTION age_annees(p personne) RETURNS INT
+LANGUAGE sql IMMUTABLE AS $$
+  SELECT EXTRACT(YEAR FROM age(CURRENT_DATE, p.date_naissance))::INT
+$$;
+**************************
+
+CREATE FUNCTION
+******** REQU TE *********
+CREATE FUNCTION adresse_complete(p personne) RETURNS TEXT
+LANGUAGE sql IMMUTABLE AS $$
+  SELECT (p.adresse).rue || ', ' || (p.adresse).code_postal || ' ' || (p.adresse).ville
+$$;
+**************************
+
+CREATE FUNCTION
+******** REQU TE *********
+SELECT '3 - m√©thodes : p.age_annees et p.adresse_complete' AS etape;
+**************************
+
+                       etape                       
+---------------------------------------------------
+ 3 - m√©thodes : p.age_annees et p.adresse_complete
+(1 ligne)
+
+******** REQU TE *********
+SELECT p.prenom,
+       age_annees(p)       AS age_notation_fonction,
+       p.age_annees        AS age_notation_methode,
+       p.adresse_complete  AS adresse
+FROM personne p
+ORDER BY p.age_annees DESC;
+**************************
+
+ prenom  | age_notation_fonction | age_notation_methode |              adresse              
+---------+-----------------------+----------------------+-----------------------------------
+ H√©l√®ne  |                    51 |                   51 | 8 rue de Rivoli, 75004 Paris
+ Julie   |                    41 |                   41 | 5 avenue Jean Jaur√®s, 75020 Paris
+ Karim   |                    36 |                   36 | 12 rue Oberkampf, 75011 Paris
+ Yasmine |                    28 |                   28 | 40 rue de Belleville, 75020 Paris
+ Sofia   |                    16 |                   16 | 3 rue des Lilas, 94300 Vincennes
+(5 lignes)
+
+******** REQU TE *********
+CREATE TABLE film (
+  id             SERIAL PRIMARY KEY,
+  titre          VARCHAR(150) NOT NULL,
+  duree          INT NOT NULL CHECK (duree > 0),
+  classification classification_t NOT NULL DEFAULT 'Tous publics',
+  tags           TEXT[] NOT NULL DEFAULT '{}',     -- un TABLEAU de mots-cl√©s
+  infos          JSONB                             -- des donn√©es semi-structur√©es
+);
+**************************
+
+CREATE TABLE
+******** REQU TE *********
+INSERT INTO film (titre, duree, classification, tags, infos) VALUES
+  ('Les Dunes d''Argent', 155, 'Tous publics', ARRAY['sf', 'aventure', 'desert'],
+     '{"pays": "France", "langues": ["fr", "en"], "budget_millions": 90}'),
+  ('Le Secret de Monte-Verde', 170, 'Tous publics', ARRAY['aventure', 'drame', 'vengeance'],
+     '{"pays": "France", "langues": ["fr"], "adaptation": true}'),
+  ('Nuit Blanche √† Marseille', 105, '-12', ARRAY['thriller', 'policier'],
+     '{"pays": "France", "langues": ["fr"]}'),
+  ('Le Jardin des Lucioles', 95, 'Tous publics', ARRAY['animation', 'famille'],
+     '{"pays": "Japon", "langues": ["ja", "fr"], "studio": "Studio Hoshi"}'),
+  ('Point de Rupture', 128, '-16', ARRAY['thriller', 'sf'],
+     '{"pays": "Belgique", "langues": ["fr", "nl"], "budget_millions": 25}');
+**************************
+
+INSERT 0 5
+******** REQU TE *********
+SELECT '4a - ENUM : -21 est refus√© (erreur attendue ci-dessous)' AS etape;
+**************************
+
+                          etape                          
+---------------------------------------------------------
+ 4a - ENUM : -21 est refus√© (erreur attendue ci-dessous)
+(1 ligne)
+
+******** REQU TE *********
+INSERT INTO film (titre, duree, classification) VALUES ('Test', 100, '-21');
+**************************
+
+******** REQU TE *********
+SELECT '4b - films tagg√©s sf' AS etape;
+**************************
+
+        etape         
+----------------------
+ 4b - films tagg√©s sf
+(1 ligne)
+
+******** REQU TE *********
+SELECT titre, tags FROM film WHERE 'sf' = ANY(tags);
+**************************
+
+       titre        |         tags         
+--------------------+----------------------
+ Les Dunes d'Argent | {sf,aventure,desert}
+ Point de Rupture   | {thriller,sf}
+(2 lignes)
+
+******** REQU TE *********
+SELECT '4b - films tagg√©s thriller ET sf' AS etape;
+**************************
+
+              etape               
+----------------------------------
+ 4b - films tagg√©s thriller ET sf
+(1 ligne)
+
+******** REQU TE *********
+SELECT titre, tags FROM film WHERE tags @> ARRAY['thriller', 'sf'];
+**************************
+
+      titre       |     tags      
+------------------+---------------
+ Point de Rupture | {thriller,sf}
+(1 ligne)
+
+******** REQU TE *********
+SELECT '4c - premier tag et nombre de tags' AS etape;
+**************************
+
+               etape                
+------------------------------------
+ 4c - premier tag et nombre de tags
+(1 ligne)
+
+******** REQU TE *********
+SELECT titre, tags[1] AS premier_tag, array_length(tags, 1) AS nb_tags FROM film;
+**************************
+
+          titre           | premier_tag | nb_tags 
+--------------------------+-------------+---------
+ Les Dunes d'Argent       | sf          |       3
+ Le Secret de Monte-Verde | aventure    |       3
+ Nuit Blanche √† Marseille | thriller    |       2
+ Le Jardin des Lucioles   | animation   |       2
+ Point de Rupture         | thriller    |       2
+(5 lignes)
+
+******** REQU TE *********
+SELECT '4d - popularit√© des tags (unnest)' AS etape;
+**************************
+
+               etape               
+-----------------------------------
+ 4d - popularit√© des tags (unnest)
+(1 ligne)
+
+******** REQU TE *********
+SELECT tag, COUNT(*) AS nb_films
+FROM film, unnest(tags) AS tag
+GROUP BY tag
+ORDER BY nb_films DESC, tag;
+**************************
+
+    tag    | nb_films 
+-----------+----------
+ aventure  |        2
+ sf        |        2
+ thriller  |        2
+ animation |        1
+ desert    |        1
+ drame     |        1
+ famille   |        1
+ policier  |        1
+ vengeance |        1
+(9 lignes)
+
+******** REQU TE *********
+SELECT '4e - JSONB : pays et langues' AS etape;
+**************************
+
+            etape             
+------------------------------
+ 4e - JSONB : pays et langues
+(1 ligne)
+
+******** REQU TE *********
+SELECT titre, infos->>'pays' AS pays, infos->'langues' AS langues
+FROM film;
+**************************
+
+          titre           |   pays   |   langues    
+--------------------------+----------+--------------
+ Les Dunes d'Argent       | France   | ["fr", "en"]
+ Le Secret de Monte-Verde | France   | ["fr"]
+ Nuit Blanche √† Marseille | France   | ["fr"]
+ Le Jardin des Lucioles   | Japon    | ["ja", "fr"]
+ Point de Rupture         | Belgique | ["fr", "nl"]
+(5 lignes)
+
+******** REQU TE *********
+SELECT '4e - JSONB : films fran√ßais' AS etape;
+**************************
+
+            etape            
+-----------------------------
+ 4e - JSONB : films fran√ßais
+(1 ligne)
+
+******** REQU TE *********
+SELECT titre FROM film WHERE infos @> '{"pays": "France"}';
+**************************
+
+          titre           
+--------------------------
+ Les Dunes d'Argent
+ Le Secret de Monte-Verde
+ Nuit Blanche √† Marseille
+(3 lignes)
+
+******** REQU TE *********
+SELECT '4e - JSONB : champ pr√©sent seulement pour certains films' AS etape;
+**************************
+
+                          etape                           
+----------------------------------------------------------
+ 4e - JSONB : champ pr√©sent seulement pour certains films
+(1 ligne)
+
+******** REQU TE *********
+SELECT titre, (infos->>'budget_millions')::INT AS budget_millions
+FROM film
+WHERE infos ? 'budget_millions';
+**************************
+
+       titre        | budget_millions 
+--------------------+-----------------
+ Les Dunes d'Argent |              90
+ Point de Rupture   |              25
+(2 lignes)
+
+******** REQU TE *********
+CREATE TABLE salle (
+  id       SERIAL PRIMARY KEY,
+  nom      VARCHAR(50) NOT NULL,
+  capacite INT NOT NULL CHECK (capacite BETWEEN 20 AND 400)
+);
+**************************
+
+CREATE TABLE
+******** REQU TE *********
+CREATE TABLE seance (
+  id             SERIAL PRIMARY KEY,
+  id_film        INT NOT NULL REFERENCES film(id),
+  id_salle       INT NOT NULL REFERENCES salle(id),
+  debut          TIMESTAMP NOT NULL,
+  places_vendues INT NOT NULL DEFAULT 0        -- mis √† jour par le trigger
+);
+**************************
+
+CREATE TABLE
+******** REQU TE *********
+CREATE TABLE billet (
+  id        SERIAL PRIMARY KEY,
+  id_seance INT NOT NULL REFERENCES seance(id),
+  siege     VARCHAR(5) NOT NULL,
+  prix      NUMERIC(6,2) NOT NULL CHECK (prix >= 0),
+  UNIQUE (id_seance, siege)                   -- R1
+);
+**************************
+
+CREATE TABLE
+******** REQU TE *********
+INSERT INTO salle (nom, capacite) VALUES ('M√©li√®s', 120), ('Petite salle test', 20);
+**************************
+
+INSERT 0 2
+******** REQU TE *********
+INSERT INTO seance (id_film, id_salle, debut) VALUES
+  (1, 1, '2026-10-24 20:00'),
+  (4, 2, '2026-10-25 14:30');
+**************************
+
+INSERT 0 2
+******** REQU TE *********
+CREATE FUNCTION places_restantes(p_id_seance INT) RETURNS INT
+LANGUAGE plpgsql AS $$
+DECLARE
+  v_restantes INT;
+BEGIN
+  SELECT sa.capacite - se.places_vendues INTO v_restantes
+  FROM seance se JOIN salle sa ON sa.id = se.id_salle
+  WHERE se.id = p_id_seance;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'La s√©ance % n''existe pas', p_id_seance;
+  END IF;
+
+  RETURN v_restantes;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+******** REQU TE *********
+CREATE FUNCTION fn_billet_vendu() RETURNS TRIGGER
+LANGUAGE plpgsql AS $$
+BEGIN
+  IF places_restantes(NEW.id_seance) <= 0 THEN
+    RAISE EXCEPTION 'S√©ance % compl√®te : plus aucune place', NEW.id_seance;
+  END IF;
+
+  UPDATE seance SET places_vendues = places_vendues + 1 WHERE id = NEW.id_seance;
+  RETURN NEW;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+******** REQU TE *********
+CREATE TRIGGER trg_billet_vendu
+BEFORE INSERT ON billet
+FOR EACH ROW EXECUTE FUNCTION fn_billet_vendu();
+**************************
+
+CREATE TRIGGER
+******** REQU TE *********
+INSERT INTO billet (id_seance, siege, prix)
+SELECT 2, 'A' || n, 9.50 FROM generate_series(1, 20) AS n;
+**************************
+
+INSERT 0 20
+******** REQU TE *********
+INSERT INTO billet (id_seance, siege, prix) VALUES (1, 'F10', 11.50), (1, 'F11', 11.50), (1, 'F12', 9.20);
+**************************
+
+INSERT 0 3
+******** REQU TE *********
+SELECT '5a - places restantes (fonction PL/pgSQL)' AS etape;
+**************************
+
+                   etape                   
+-------------------------------------------
+ 5a - places restantes (fonction PL/pgSQL)
+(1 ligne)
+
+******** REQU TE *********
+SELECT se.id AS seance, f.titre, sa.nom AS salle, sa.capacite,
+       se.places_vendues, places_restantes(se.id) AS restantes
+FROM seance se
+JOIN film f  ON f.id  = se.id_film
+JOIN salle sa ON sa.id = se.id_salle
+ORDER BY se.id;
+**************************
+
+ seance |         titre          |       salle       | capacite | places_vendues | restantes 
+--------+------------------------+-------------------+----------+----------------+-----------
+      1 | Les Dunes d'Argent     | M√©li√®s            |      120 |              3 |       117
+      2 | Le Jardin des Lucioles | Petite salle test |       20 |             20 |         0
+(2 lignes)
+
+******** REQU TE *********
+SELECT '5b - 21e place dans une salle de 20 : refus√©e (erreur attendue ci-dessous)' AS etape;
+**************************
+
+                                   etape                                    
+----------------------------------------------------------------------------
+ 5b - 21e place dans une salle de 20 : refus√©e (erreur attendue ci-dessous)
+(1 ligne)
+
+******** REQU TE *********
+INSERT INTO billet (id_seance, siege, prix) VALUES (2, 'B1', 9.50);
+**************************
+
+******** REQU TE *********
+SELECT '5c - le compteur est rest√© √† 20' AS etape;
+**************************
+
+              etape              
+---------------------------------
+ 5c - le compteur est rest√© √† 20
+(1 ligne)
+
+******** REQU TE *********
+SELECT id AS seance, places_vendues FROM seance WHERE id = 2;
+**************************
+
+ seance | places_vendues 
+--------+----------------
+      2 |             20
+(1 ligne)
+
+******** REQU TE *********
+SELECT '6 - tables et h√©ritage' AS etape;
+**************************
+
+         etape          
+------------------------
+ 6 - tables et h√©ritage
+(1 ligne)
+
+******** REQU TE *********
+SELECT c.relname AS table_fille, p.relname AS table_mere
+FROM pg_inherits i
+JOIN pg_class c ON c.oid = i.inhrelid
+JOIN pg_class p ON p.oid = i.inhparent;
+**************************
+
+ table_fille | table_mere 
+-------------+------------
+ employe     | personne
+ client      | personne
+(2 lignes)
+
+        Liste des types de donnÈes
+ SchÈma  |       Nom        | Description 
+--------+------------------+-------------
+ public | adresse_t        | 
+ public | classification_t | 
+(2 lignes)
+
+            Liste des tables
+ SchÈma  |   Nom    | Type  | PropriÈtaire 
+--------+----------+-------+-------------
+ public | billet   | table | postgres
+ public | client   | table | postgres
+ public | employe  | table | postgres
+ public | film     | table | postgres
+ public | personne | table | postgres
+ public | salle    | table | postgres
+ public | seance   | table | postgres
+(7 lignes)
+
