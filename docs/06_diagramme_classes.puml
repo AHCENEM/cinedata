@@ -1,0 +1,176 @@
+@startuml
+title CinéData - Diagramme de classes
+skinparam classAttributeIconSize 0
+hide empty members
+
+abstract class Personne {
+  - id : Integer
+  - nom : String
+  - prenom : String
+  - dateNaissance : Date
+  - email : String
+  - telephone : String
+  / age : Integer
+}
+
+package "Clients" {
+  class Client {
+    - adresse : String
+    - dateInscription : Date
+    + reserver(seance : Seance) : Reservation
+  }
+  class CarteFidelite {
+    - numero : String
+    - points : Integer = 0
+    - dateCreation : Date
+    + {static} TAUX_REDUCTION : Decimal = 0.20 {readOnly}
+  }
+  class Avis {
+    - note : Integer
+    - commentaire : String
+    - dateAvis : Date
+  }
+}
+
+package "Personnel" {
+  class Employe {
+    - dateEmbauche : Date
+    - poste : String
+    - salaire : Decimal
+  }
+  class Equipe {
+    - id : Integer
+    - nom : String
+  }
+}
+
+package "Catalogue" {
+  class Film {
+    - id : Integer
+    - titre : String
+    - duree : Integer
+    - dateSortie : Date
+    - classification : String
+    - synopsis : String
+  }
+  class Genre {
+    - id : Integer
+    - libelle : String
+  }
+  class Realisateur {
+    - id : Integer
+    - nom : String
+    - prenom : String
+  }
+  class Acteur {
+    - id : Integer
+    - nom : String
+    - prenom : String
+  }
+  class Casting {
+    - role : String
+  }
+}
+
+package "Programmation" {
+  class Salle {
+    - numero : Integer
+    - nom : String
+    - capacite : Integer
+    - type : String
+    + {static} CAPACITE_MAX : Integer = 400 {readOnly}
+  }
+  class Siege {
+    - rangee : String
+    - numero : Integer
+    - estPMR : Boolean = false
+  }
+  class Seance {
+    - id : Integer
+    - dateHeureDebut : DateTime
+    - version : String
+    - prixBase : Decimal
+    / tauxRemplissage : Decimal
+  }
+}
+
+package "Billetterie" {
+  class Reservation {
+    - id : Integer
+    - dateReservation : DateTime
+    - statut : String
+    / montantTotal : Decimal
+    + {static} MAX_PLACES : Integer = 10 {readOnly}
+    + {static} nbTotalBillets : Integer
+    + annuler() : Boolean
+  }
+  class PlaceReservee {
+    - tarif : String
+    - prix : Decimal
+  }
+  class Paiement {
+    - id : Integer
+    - montant : Decimal
+    - datePaiement : DateTime
+    - statut : String
+  }
+  interface MoyenPaiement {
+    + payer(montant : Decimal) : Boolean
+  }
+  class PaiementCB {
+    - numeroTransaction : String
+  }
+  class PaiementEspeces {
+    - montantRecu : Decimal
+  }
+  class Ticket {
+    - code : String
+    - dateEmission : DateTime
+    + imprimer() : void
+  }
+}
+
+class Imprimante {
+  + imprimer(t : Ticket) : void
+}
+
+' ===== Héritage =====
+Personne <|-- Client
+Personne <|-- Employe
+
+' ===== Clients =====
+Client "1" -- "0..1" CarteFidelite : possède >
+Client "1" -- "*" Avis : rédige >
+Avis "*" -- "1" Film : porte sur >
+
+' ===== Personnel =====
+Employe "responsable 0..1" -- "subordonné *" Employe : supervise
+Equipe "0..1" o-- "*" Employe : regroupe >
+
+' ===== Catalogue =====
+Film "*" -- "1..*" Genre : classé dans >
+Film "*" -- "1" Realisateur : réalisé par >
+Film "*" -- "*" Acteur
+(Film, Acteur) .. Casting
+
+' ===== Programmation =====
+Salle "1" *-- "20..400" Siege : composée de >
+Seance "*" -- "1" Film : projette >
+Seance "*" -- "1" Salle : a lieu dans >
+
+' ===== Billetterie =====
+Client "1" -- "*" Reservation : effectue >
+Reservation "*" -- "1" Seance : concerne >
+Reservation "*" -- "1..10" Siege
+(Reservation, Siege) .. PlaceReservee
+note right of PlaceReservee
+  R1 : un siège n'est réservé
+  qu'une seule fois par séance
+end note
+Reservation "1" -- "0..1" Paiement : réglée par >
+Paiement "*" --> "1" MoyenPaiement : utilise >
+MoyenPaiement <|.. PaiementCB
+MoyenPaiement <|.. PaiementEspeces
+Reservation "1" *-- "0..1" Ticket : génère >
+Ticket ..> Imprimante : utilise >
+@enduml
