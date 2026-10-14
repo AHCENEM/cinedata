@@ -1,0 +1,262 @@
+﻿
+==================================================
+ 1 - insertMany : 7 avis, chacun avec sa propre structure
+==================================================
+Documents insérés : 7
+Événements de navigation : 10
+
+==================================================
+ 2 - validation $jsonSchema : un avis noté 6 est refusé
+==================================================
+Refusé comme prévu : Document failed validation
+
+==================================================
+ 3a - find : avis notés 4 ou plus ($gte), triés par likes
+==================================================
+[
+  {
+    film: {
+      titre: "Les Dunes d'Argent"
+    },
+    note: 5,
+    likes: 12
+  },
+  {
+    film: {
+      titre: 'Le Jardin des Lucioles'
+    },
+    note: 5,
+    likes: 8
+  },
+  {
+    film: {
+      titre: 'Point de Rupture'
+    },
+    note: 4,
+    likes: 6
+  },
+  {
+    film: {
+      titre: 'Le Secret de Monte-Verde'
+    },
+    note: 4,
+    likes: 5
+  },
+  {
+    film: {
+      titre: "Les Dunes d'Argent"
+    },
+    note: 4,
+    likes: 3
+  }
+]
+
+==================================================
+ 3b - champ imbriqué : avis sur Les Dunes d'Argent ("film.titre")
+==================================================
+[
+  {
+    client: {
+      pseudo: 'karim_b'
+    },
+    note: 5
+  },
+  {
+    client: {
+      pseudo: 'julie_m'
+    },
+    note: 4
+  }
+]
+
+==================================================
+ 3c - recherche dans un tableau : avis taggés "sf"
+==================================================
+[
+  {
+    film: {
+      titre: "Les Dunes d'Argent"
+    },
+    tags: [
+      'visuel',
+      'imax',
+      'sf'
+    ]
+  },
+  {
+    film: {
+      titre: "Les Dunes d'Argent"
+    },
+    tags: [
+      'long',
+      'sf'
+    ]
+  },
+  {
+    film: {
+      titre: 'Point de Rupture'
+    },
+    tags: [
+      'thriller',
+      'suspense',
+      'sf'
+    ]
+  }
+]
+
+==================================================
+ 3d - $exists : avis SANS commentaire / avis marqués spoiler
+==================================================
+Sans commentaire : 1
+Avec spoiler     : 1
+
+==================================================
+ 3e - $in + limit : 2 premiers avis des films 2 et 5
+==================================================
+[
+  {
+    film: {
+      titre: 'Le Secret de Monte-Verde'
+    },
+    note: 4
+  },
+  {
+    film: {
+      titre: 'Le Secret de Monte-Verde'
+    },
+    note: 2
+  }
+]
+
+==================================================
+ 4 - updateOne : $inc (likes), $push (réponse), $set (modération)
+==================================================
+{
+  likes: 7,
+  modere: true,
+  reponses: [
+    {
+      auteur: 'karim_b',
+      texte: 'Je confirme, quel suspense !',
+      date: ISODate('2026-10-14T11:11:21.583Z')
+    }
+  ]
+}
+
+==================================================
+ 5a - note moyenne et nombre d'avis par film ($group, $avg)
+==================================================
+[
+  {
+    nb_avis: 1,
+    total_likes: 8,
+    film: 'Le Jardin des Lucioles',
+    note_moyenne: 5
+  },
+  {
+    nb_avis: 2,
+    total_likes: 15,
+    film: "Les Dunes d'Argent",
+    note_moyenne: 4.5
+  },
+  {
+    nb_avis: 1,
+    total_likes: 7,
+    film: 'Point de Rupture',
+    note_moyenne: 4
+  },
+  {
+    nb_avis: 2,
+    total_likes: 6,
+    film: 'Le Secret de Monte-Verde',
+    note_moyenne: 3
+  },
+  {
+    nb_avis: 1,
+    total_likes: 0,
+    film: 'Nuit Blanche à Marseille',
+    note_moyenne: 3
+  }
+]
+
+==================================================
+ 5b - tags les plus utilisés ($unwind = déplier un tableau)
+==================================================
+[
+  {
+    _id: 'sf',
+    nb: 3
+  },
+  {
+    _id: 'adaptation',
+    nb: 1
+  },
+  {
+    _id: 'drame',
+    nb: 1
+  },
+  {
+    _id: 'emotion',
+    nb: 1
+  },
+  {
+    _id: 'famille',
+    nb: 1
+  }
+]
+
+==================================================
+ 5c - entonnoir de conversion : nombre de sessions par étape
+==================================================
+[
+  {
+    etape: 'page_vue',
+    nb_sessions: 3
+  },
+  {
+    etape: 'ajout_panier',
+    nb_sessions: 2
+  },
+  {
+    etape: 'recherche',
+    nb_sessions: 2
+  },
+  {
+    etape: 'paiement',
+    nb_sessions: 1
+  }
+]
+
+==================================================
+ 5d - recherches sans résultat (idées de films à programmer)
+==================================================
+[
+  {
+    session: 's2',
+    terme: 'enfants'
+  }
+]
+
+==================================================
+ 6 - explain avant / après index sur film.id
+==================================================
+AVANT : étape = COLLSCAN | documents examinés = 7
+APRÈS : étape = IXSCAN | documents examinés = 2
+Index de la collection avis :
+[
+  '_id_',
+  'film.id_1'
+]
+
+==================================================
+ 7 - deleteMany : purge des événements de la session s2
+==================================================
+Événements supprimés : 2
+Événements restants  : 8
+
+==================================================
+ BILAN
+==================================================
+Collections : logs_navigation, avis
+Avis        : 7
+Événements  : 8
